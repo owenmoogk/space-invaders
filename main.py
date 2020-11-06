@@ -90,7 +90,7 @@ while True:
 
     if 0 > enemyX or enemyX > screenX-enemySize:
         enemyDirection = not enemyDirection
-        enemyY += 30
+        enemyY += 60
         if enemyY > screenY-100:
             pygame.quit()
             sys.exit()
