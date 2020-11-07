@@ -20,9 +20,20 @@ enemySpeedXIncrement = .2 #every 50 points (5 shots) the speed of the enemy incr
 enemyYDrop = 50 #every time the enemy reaches an edge this is they y drop
 numOfEnemies = 4 #number of enemies
 levelLength = 10 #number of enemies killed to move onto next level
+textX = 30 #x value for showing the score
+textY = 30 #y value for showing the score
+levelOffset = 50 # number of pixels shifted down the level display is
 
-#score
+#scoreboard
 score = 0
+level = 1
+font = pygame.font.Font('freesansbold.ttf',32) #font and size
+def showScore(x,y):
+    scoreDisplay = font.render('Score: '+str(score),True, (255,255,255))
+    screen.blit(scoreDisplay,(x,y))
+    levelDisplay = font.render('Level: '+str(level),True, (255,255,255))
+    screen.blit(levelDisplay,(x,y+levelOffset))
+    
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
@@ -143,6 +154,7 @@ while True:
             enemyDirection[i] = bool(random.randint(0,1))
             if score%(levelLength*10) == 0 and score > 0:
                 enemySpeedX += enemySpeedXIncrement
+                level += 1
 
     
 
@@ -154,7 +166,7 @@ while True:
             bulletState = "ready"
             bulletY = playerY
     
-    
+    showScore(textX,textY)
 
     #update the screen
     pygame.display.update()
