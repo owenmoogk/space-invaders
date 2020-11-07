@@ -6,16 +6,18 @@ import random
 pygame.init()
 
 #settings
-screenX = 800
-screenY = 600
+screenX = 800 #width of the screen
+screenY = 600 #height of the screen
 playerSize = 64 #pixels
 enemySize = 64 #pixels
-playerSpeed = 0.3
-enemyY = 70 #drop when reaches edge of screen
-enemySpeedX = 0.2
-bulletSpeed = .5
+playerSpeed = 0.3 #player movement speed
+enemyYInit = 70 #drop when reaches edge of screen
+enemySpeedX = .3 #initial speed of the enemy
+bulletSpeed = 1 #speed of the bullet
 bulletWidth = 16 #pixels
 bulletHeight = 32 #pixels
+enemySpeedXIncrement = 0.1 #every 50 points (5 shots) the speed of the enemy increases by this
+enemyYDrop = 50 #every time the enemy reaches an edge this is they y drop
 
 #score
 score = 0
@@ -41,6 +43,7 @@ def player(x,y):
 #enemy
 enemyImg = pygame.image.load('img/enemy.png') 
 enemyX = random.randint(0,800-enemySize)
+enemyY = enemyYInit
 enemyDirection = bool(random.randint(0,1))
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))
@@ -91,8 +94,8 @@ while True:
             playerX += playerSpeed
         if playerX < 0:
             playerX = 0
-        if playerX > 800-playerSize:
-            playerX = 800-playerSize
+        if playerX > screenX-playerSize:
+            playerX = screenX-playerSize
         if event.key == pygame.K_DOWN:
             if bulletState != 'fire':
                 bulletState = 'fire'
@@ -108,8 +111,9 @@ while True:
 
     if 0 > enemyX or enemyX > screenX-enemySize:
         enemyDirection = not enemyDirection
-        enemyY += 60
-        if enemyY > screenY-100:
+        enemyY += enemyYDrop
+        print ('enemy y',enemyY,'playery+enemysize',playerY,enemySize)
+        if enemyY >= playerY - enemySize:
             pygame.quit()
             sys.exit()
 
@@ -128,7 +132,12 @@ while True:
         bulletState = 'ready'
         score += 10
         print (score)
+        if score%50 == 0:
+            enemySpeedX += enemySpeedXIncrement
+        enemyX = random.randint(0,800-enemySize)
+        enemyY = enemyYInit
+        enemyDirection = bool(random.randint(0,1))
     
 
-    #needed to update the screen
+    #update the screen
     pygame.display.update()
