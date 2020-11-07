@@ -10,9 +10,9 @@ screenX = 800
 screenY = 600
 playerSize = 64 #pixels
 enemySize = 64 #pixels
-playerSpeed = 0.6
+playerSpeed = 0.3
 enemyY = 70 #drop when reaches edge of screen
-enemySpeedX = 0.5
+enemySpeedX = 0.2
 bulletSpeed = .5
 bulletSize = 32 #pixels
 
@@ -80,8 +80,11 @@ while True:
         if playerX > 800-playerSize:
             playerX = 800-playerSize
         if event.key == pygame.K_DOWN:
-            bulletState = 'fire'
-            fire(playerX,bulletY)
+            if bulletState != 'fire':
+                bulletState = 'fire'
+                fire(playerX,bulletY)
+                bulletX = playerX - bulletSize/2
+            
 
     #enemy movement
     if enemyDirection: #right
@@ -91,9 +94,11 @@ while True:
 
     #bullet movement
     if bulletState == 'fire':
-        fire(playerX,bulletY)
+        fire(bulletX,bulletY)
         bulletY -= bulletSpeed
-        print (bulletY)
+        if bulletY < 0:
+            bulletState = "ready"
+            bulletY = playerY
 
 
     if 0 > enemyX or enemyX > screenX-enemySize:
