@@ -11,13 +11,15 @@ screenY = 600 #height of the screen
 playerSize = 64 #pixels
 enemySize = 64 #pixels
 playerSpeed = 0.3 #player movement speed
-enemyYInit = 70 #drop when reaches edge of screen
-enemySpeedX = .3 #initial speed of the enemy
+enemyYInit = 70 #spawning distance from top of screen
+enemySpeedX = .2 #initial speed of the enemy
 bulletSpeed = 1 #speed of the bullet
 bulletWidth = 16 #pixels
 bulletHeight = 32 #pixels
-enemySpeedXIncrement = 0.1 #every 50 points (5 shots) the speed of the enemy increases by this
+enemySpeedXIncrement = .2 #every 50 points (5 shots) the speed of the enemy increases by this
 enemyYDrop = 50 #every time the enemy reaches an edge this is they y drop
+numOfEnemies = 4 #number of enemies
+levelLength = 10 #number of enemies killed to move onto next level
 
 #score
 score = 0
@@ -41,10 +43,16 @@ def player(x,y):
     screen.blit(playerImg,(x,y))
 
 #enemy
-enemyImg = pygame.image.load('img/enemy.png') 
-enemyX = random.randint(0,800-enemySize)
-enemyY = enemyYInit
-enemyDirection = bool(random.randint(0,1))
+enemyImg = pygame.image.load('img/enemy.png')
+enemyX = []
+enemyY = []
+enemyDirection = []
+
+for i in range(numOfEnemies):
+    enemyX.append(random.randint(0,800-enemySize))
+    enemyY.append(enemyYInit)
+    enemyDirection.append(bool(random.randint(0,1)))
+
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))
 
@@ -71,7 +79,7 @@ def isCollision(enemyX,enemyY,bulletX,bulletY):
 #running loop
 while True:
 
-    #playerX button work
+    #quit the game (x button)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -84,7 +92,7 @@ while True:
 
     #draw player
     player(playerX,playerY)
-    enemy(enemyX,enemyY)
+    
 
     #inputs
     if event.type == pygame.KEYDOWN:
@@ -104,18 +112,39 @@ while True:
             
 
     #enemy movement
-    if enemyDirection: #right
-        enemyX += enemySpeedX
-    else:
-        enemyX -= enemySpeedX
+    for i in range(numOfEnemies):
+        if enemyDirection[i]: #right
+            enemyX[i] += enemySpeedX
+        else: #left
+            enemyX[i] -= enemySpeedX
 
-    if 0 > enemyX or enemyX > screenX-enemySize:
-        enemyDirection = not enemyDirection
-        enemyY += enemyYDrop
-        print ('enemy y',enemyY,'playery+enemysize',playerY,enemySize)
-        if enemyY >= playerY - enemySize:
-            pygame.quit()
-            sys.exit()
+        if 0 > enemyX[i] or enemyX[i] > screenX-enemySize:
+            enemyDirection[i] = not (enemyDirection[i])
+            enemyY[i] += enemyYDrop
+            if enemyDirection[i]:
+                enemyX[i] +=1
+            else:
+                enemyX[i] -= 1
+            if enemyY[i] >= playerY - enemySize:
+                print ('quit cuz told')
+                pygame.quit()
+                sys.exit()
+
+        enemy(enemyX[i],enemyY[i])
+
+        #collision detection
+        collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
+        if collision:
+            bulletY = playerY
+            bulletState = 'ready'
+            score += 10
+            enemyX[i] = random.randint(0,800-enemySize)
+            enemyY[i] = enemyYInit
+            enemyDirection[i] = bool(random.randint(0,1))
+            if score%(levelLength*10) == 0 and score > 0:
+                enemySpeedX += enemySpeedXIncrement
+
+    
 
     #bullet movement
     if bulletState == 'fire':
@@ -125,18 +154,6 @@ while True:
             bulletState = "ready"
             bulletY = playerY
     
-    #collision detection
-    collision = isCollision(enemyX, enemyY, bulletX, bulletY)
-    if collision:
-        bulletY = playerY
-        bulletState = 'ready'
-        score += 10
-        print (score)
-        if score%50 == 0:
-            enemySpeedX += enemySpeedXIncrement
-        enemyX = random.randint(0,800-enemySize)
-        enemyY = enemyYInit
-        enemyDirection = bool(random.randint(0,1))
     
 
     #update the screen
