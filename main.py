@@ -9,7 +9,11 @@ pygame.init()
 screenX = 800
 screenY = 600
 playerSize = 64 #pixels
-playerSpeed = 0.3
+enemySize = 64 #pixels
+playerSpeed = 0.6
+enemyY = 70 #drop when reaches edge of screen
+enemySpeedX = 0.5
+
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
@@ -19,6 +23,8 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load("img/icon.jpg")
 pygame.display.set_icon(icon)
 
+#background
+background = pygame.image.load('img/background.jpg')
 
 #player
 playerImg = pygame.image.load('img/player.png')
@@ -28,13 +34,9 @@ def player(x,y):
     screen.blit(playerImg,(x,y))
 
 #enemy
-enemyImg = pygame.image.load('img/enemy.png')
-enemySize = 64 #player size in pixels, used for aligning with walls and center
+enemyImg = pygame.image.load('img/enemy.png') 
 enemyX = random.randint(0,800-enemySize)
-enemyY = 70
-enemySpeedX = 0.3
 enemyDirection = bool(random.randint(0,1))
-    
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))
 
@@ -48,8 +50,9 @@ while True:
             pygame.quit()
             sys.exit()
 
-    #fill the screen with red
+    #background
     screen.fill((0,0,0))
+    screen.blit(background,(0,0))
 
 
     #draw player
@@ -78,15 +81,10 @@ while True:
         #     y = 600-playerSize
 
     #enemy movement
-    
-
-
-    
     if enemyDirection: #right
         enemyX += enemySpeedX
     else:
         enemyX -= enemySpeedX
-
 
     if 0 > enemyX or enemyX > screenX-enemySize:
         enemyDirection = not enemyDirection
