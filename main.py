@@ -23,13 +23,14 @@ bulletSpeed = 750/fpsLimit #speed of the bullet
 bulletWidth = 16 #pixels
 bulletHeight = 32 #pixels
 enemySpeedXIncrement = .5 #every x points (5 shots) the speed of the enemy increases by this (affected by fps)
-enemyYDrop = 50 #every time the enemy reaches an edge this is they y drop
+enemyYDrop = 70 #every time the enemy reaches an edge this is they y drop
 numOfEnemies = 4 #number of enemies
 levelLength = 10 #number of enemies killed to move onto next level
 textX = 20 #x value for showing the score
 textY = 10 #y value for showing the score
 levelOffset = 40 # number of pixels shifted down the level display is
 font = pygame.font.Font('text/Starjedi.ttf',30) #font and size
+gameOverFont = pygame.font.Font('text/Starjedi.ttf',60)
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
@@ -97,6 +98,11 @@ def isCollision(enemyX,enemyY,bulletX,bulletY):
     else:
         return False
 
+#game over
+def gameOverText(x,y):
+    textGameOver = gameOverFont.render('Game 0ver!',True,(255,255,255))
+    screen.blit(textGameOver, (x,y))
+
 #running loop
 while True:
 
@@ -150,11 +156,12 @@ while True:
             else:
                 enemyX[i] -= 1
 
-            #game over
-            if enemyY[i] >= playerY - enemySize:
-                print ('Final Score: ',score)
-                pygame.quit()
-                sys.exit()
+        #game over
+        if enemyY[i] >= playerY - enemySize:
+            for p in range (numOfEnemies):
+                enemyY[p] = screenY
+            gameOverText(200,200)
+            break
 
         enemy(enemyX[i],enemyY[i])
 
