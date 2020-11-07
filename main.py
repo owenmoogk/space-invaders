@@ -11,29 +11,20 @@ screenY = 600 #height of the screen
 playerSize = 64 #pixels
 enemySize = 64 #pixels
 playerSpeed = 0.3 #player movement speed
-enemyYInit = 70 #spawning distance from top of screen
+enemyYInitMin = 50 #spawning distance from top of screen minimum
+enemyYInitMax = 150 #spawning distance from top of screen minimum
 enemySpeedX = .2 #initial speed of the enemy
 bulletSpeed = 1 #speed of the bullet
 bulletWidth = 16 #pixels
 bulletHeight = 32 #pixels
-enemySpeedXIncrement = .2 #every 50 points (5 shots) the speed of the enemy increases by this
+enemySpeedXIncrement = .15 #every 50 points (5 shots) the speed of the enemy increases by this
 enemyYDrop = 50 #every time the enemy reaches an edge this is they y drop
 numOfEnemies = 4 #number of enemies
 levelLength = 10 #number of enemies killed to move onto next level
-textX = 30 #x value for showing the score
-textY = 30 #y value for showing the score
-levelOffset = 50 # number of pixels shifted down the level display is
-
-#scoreboard
-score = 0
-level = 1
-font = pygame.font.Font('freesansbold.ttf',32) #font and size
-def showScore(x,y):
-    scoreDisplay = font.render('Score: '+str(score),True, (255,255,255))
-    screen.blit(scoreDisplay,(x,y))
-    levelDisplay = font.render('Level: '+str(level),True, (255,255,255))
-    screen.blit(levelDisplay,(x,y+levelOffset))
-    
+textX = 20 #x value for showing the score
+textY = 10 #y value for showing the score
+levelOffset = 40 # number of pixels shifted down the level display is
+font = pygame.font.Font('text/Starjedi.ttf',30) #font and size
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
@@ -45,6 +36,20 @@ pygame.display.set_icon(icon)
 
 #background
 background = pygame.image.load('img/background.jpg')
+
+#scoreboard
+score = 0
+level = 1
+def showScore(x,y):
+    scoreDisplay = font.render('Score: '+str(score),True, (255,255,255))
+    screen.blit(scoreDisplay,(x,y))
+    levelDisplay = font.render('Level: '+str(level),True, (255,255,255))
+    screen.blit(levelDisplay,(x,y+levelOffset))
+    
+
+
+
+
 
 #player
 playerImg = pygame.image.load('img/player.png')
@@ -60,8 +65,8 @@ enemyY = []
 enemyDirection = []
 
 for i in range(numOfEnemies):
-    enemyX.append(random.randint(0,800-enemySize))
-    enemyY.append(enemyYInit)
+    enemyX.append(random.randint(0,screenX-enemySize))
+    enemyY.append(random.randint(enemyYInitMin,enemyYInitMax))
     enemyDirection.append(bool(random.randint(0,1)))
 
 def enemy(x,y):
@@ -137,7 +142,7 @@ while True:
             else:
                 enemyX[i] -= 1
             if enemyY[i] >= playerY - enemySize:
-                print ('quit cuz told')
+                print ('Final Score: ',score)
                 pygame.quit()
                 sys.exit()
 
@@ -149,8 +154,8 @@ while True:
             bulletY = playerY
             bulletState = 'ready'
             score += 10
-            enemyX[i] = random.randint(0,800-enemySize)
-            enemyY[i] = enemyYInit
+            enemyX[i] = random.randint(0,screenX-enemySize)
+            enemyY[i] = random.randint(enemyYInitMin,enemyYInitMax)
             enemyDirection[i] = bool(random.randint(0,1))
             if score%(levelLength*10) == 0 and score > 0:
                 enemySpeedX += enemySpeedXIncrement
