@@ -5,16 +5,20 @@ import random
 #intalize
 pygame.init()
 
+#clock
+clock = pygame.time.Clock()
+
 #settings
+fpsLimit = 120 #controls the max framerate
 screenX = 800 #width of the screen
 screenY = 600 #height of the screen
 playerSize = 64 #pixels
 enemySize = 64 #pixels
-playerSpeed = 0.3 #player movement speed
+playerSpeed = 150/fpsLimit #player movement speed
 enemyYInitMin = 50 #spawning distance from top of screen minimum
 enemyYInitMax = 150 #spawning distance from top of screen minimum
-enemySpeedX = .2 #initial speed of the enemy
-bulletSpeed = 1 #speed of the bullet
+enemySpeedX = 200/fpsLimit #initial speed of the enemy
+bulletSpeed = 750/fpsLimit #speed of the bullet
 bulletWidth = 16 #pixels
 bulletHeight = 32 #pixels
 enemySpeedXIncrement = .15 #every 50 points (5 shots) the speed of the enemy increases by this
@@ -46,10 +50,8 @@ def showScore(x,y):
     levelDisplay = font.render('Level: '+str(level),True, (255,255,255))
     screen.blit(levelDisplay,(x,y+levelOffset))
     
-
-
-
-
+#seconds init
+start_ticks=pygame.time.get_ticks() #starter tick
 
 #player
 playerImg = pygame.image.load('img/player.png')
@@ -90,8 +92,6 @@ def isCollision(enemyX,enemyY,bulletX,bulletY):
     else:
         return False
 
-
-
 #running loop
 while True:
 
@@ -108,7 +108,8 @@ while True:
 
     #draw player
     player(playerX,playerY)
-    
+
+
 
     #inputs
     if event.type == pygame.KEYDOWN:
@@ -126,7 +127,6 @@ while True:
                 fire(playerX,bulletY)
                 bulletX = playerX + bulletWidth/2
             
-
     #enemy movement
     for i in range(numOfEnemies):
         if enemyDirection[i]: #right
@@ -161,8 +161,6 @@ while True:
                 enemySpeedX += enemySpeedXIncrement
                 level += 1
 
-    
-
     #bullet movement
     if bulletState == 'fire':
         fire(bulletX,bulletY)
@@ -172,6 +170,9 @@ while True:
             bulletY = playerY
     
     showScore(textX,textY)
+
+    #clock
+    clock.tick(fpsLimit) #fps
 
     #update the screen
     pygame.display.update()
