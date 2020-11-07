@@ -14,8 +14,11 @@ playerSpeed = 0.3
 enemyY = 70 #drop when reaches edge of screen
 enemySpeedX = 0.2
 bulletSpeed = .5
-bulletSize = 32 #pixels
+bulletWidth = 16 #pixels
+bulletHeight = 32 #pixels
 
+#score
+score = 0
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
@@ -48,7 +51,18 @@ bulletX = playerX
 bulletY = playerY
 bulletState = 'ready' #ready = cant see bullet ---- fire = bullet is currently moving
 def fire(x,y):
-    screen.blit(bulletImg,(x + bulletSize,y))
+    screen.blit(bulletImg,(x + bulletWidth,y))
+
+#collision detection
+def isCollision(enemyX,enemyY,bulletX,bulletY):
+    if bulletY > enemyY and bulletY < enemyY + enemySize:
+        if bulletX + bulletWidth > enemyX and bulletX < enemyX + enemySize:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 
 
 #running loop
@@ -83,7 +97,7 @@ while True:
             if bulletState != 'fire':
                 bulletState = 'fire'
                 fire(playerX,bulletY)
-                bulletX = playerX - bulletSize/2
+                bulletX = playerX + bulletWidth/2
             
 
     #enemy movement
@@ -92,6 +106,13 @@ while True:
     else:
         enemyX -= enemySpeedX
 
+    if 0 > enemyX or enemyX > screenX-enemySize:
+        enemyDirection = not enemyDirection
+        enemyY += 60
+        if enemyY > screenY-100:
+            pygame.quit()
+            sys.exit()
+
     #bullet movement
     if bulletState == 'fire':
         fire(bulletX,bulletY)
@@ -99,15 +120,14 @@ while True:
         if bulletY < 0:
             bulletState = "ready"
             bulletY = playerY
-
-
-    if 0 > enemyX or enemyX > screenX-enemySize:
-        enemyDirection = not enemyDirection
-        enemyY += 60
-        if enemyY > screenY-100:
-            pygame.quit()
-            sys.exit()
     
+    #collision detection
+    collision = isCollision(enemyX, enemyY, bulletX, bulletY)
+    if collision:
+        bulletY = playerY
+        bulletState = 'ready'
+        score += 10
+        print (score)
     
 
     #needed to update the screen
