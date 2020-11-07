@@ -13,6 +13,8 @@ enemySize = 64 #pixels
 playerSpeed = 0.6
 enemyY = 70 #drop when reaches edge of screen
 enemySpeedX = 0.5
+bulletSpeed = .5
+bulletSize = 32 #pixels
 
 
 #create screen
@@ -40,6 +42,14 @@ enemyDirection = bool(random.randint(0,1))
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))
 
+#bullet
+bulletImg = pygame.image.load('img/bullet.png')
+bulletX = playerX
+bulletY = playerY
+bulletState = 'ready' #ready = cant see bullet ---- fire = bullet is currently moving
+def fire(x,y):
+    screen.blit(bulletImg,(x + bulletSize,y))
+
 
 #running loop
 while True:
@@ -59,9 +69,8 @@ while True:
     player(playerX,playerY)
     enemy(enemyX,enemyY)
 
-    #player movement
+    #inputs
     if event.type == pygame.KEYDOWN:
-
         if event.key == pygame.K_LEFT:
             playerX -= playerSpeed
         if event.key == pygame.K_RIGHT:
@@ -70,21 +79,22 @@ while True:
             playerX = 0
         if playerX > 800-playerSize:
             playerX = 800-playerSize
-
-        # if event.key == pygame.K_UP:
-        #     y -= speed
-        # if event.key == pygame.K_DOWN:
-        #     y += speed
-        # if y < 0:
-        #     y = 0
-        # if y > 600-playerSize:
-        #     y = 600-playerSize
+        if event.key == pygame.K_DOWN:
+            bulletState = 'fire'
+            fire(playerX,bulletY)
 
     #enemy movement
     if enemyDirection: #right
         enemyX += enemySpeedX
     else:
         enemyX -= enemySpeedX
+
+    #bullet movement
+    if bulletState == 'fire':
+        fire(playerX,bulletY)
+        bulletY -= bulletSpeed
+        print (bulletY)
+
 
     if 0 > enemyX or enemyX > screenX-enemySize:
         enemyDirection = not enemyDirection
