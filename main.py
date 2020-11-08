@@ -29,23 +29,23 @@ levelLength = 10 #number of enemies killed to move onto next level
 textX = 20 #x value for showing the score
 textY = 10 #y value for showing the score
 levelOffset = 40 # number of pixels shifted down the level display is
-font = pygame.font.Font('text/Starjedi.ttf',30) #font and size
-gameOverFont = pygame.font.Font('text/Starjedi.ttf',60)
+font = pygame.font.Font('assets/text/Starjedi.ttf',30) #font and size
+gameOverFont = pygame.font.Font('assets/text/Starjedi.ttf',60)
 
 #create screen
 screen = pygame.display.set_mode((screenX,screenY))
 
 #background sound
-backgroundMusic = mixer.music.load('sounds/background.mp3')
+backgroundMusic = mixer.music.load('assets/sounds/background.mp3')
 mixer.music.play(-1)
 
 #title and icon
 pygame.display.set_caption("Space Invaders")
-icon = pygame.image.load("img/icon.jpg")
+icon = pygame.image.load("assets/img/icon.jpg")
 pygame.display.set_icon(icon)
 
 #background
-background = pygame.image.load('img/background.jpg')
+background = pygame.image.load('assets/img/background.jpg')
 
 #scoreboard
 score = 0
@@ -60,14 +60,14 @@ def showScore(x,y):
 start_ticks=pygame.time.get_ticks() #starter tick
 
 #player
-playerImg = pygame.image.load('img/player.png')
+playerImg = pygame.image.load('assets/img/player.png')
 playerX = (screenX/2)-playerSize/2
 playerY = screenY - (screenY/5)
 def player(x,y):
     screen.blit(playerImg,(x,y))
 
 #enemy
-enemyImg = pygame.image.load('img/enemy.png')
+enemyImg = pygame.image.load('assets/img/enemy.png')
 enemyX = []
 enemyY = []
 enemyDirection = []
@@ -81,7 +81,7 @@ def enemy(x,y):
     screen.blit(enemyImg,(x,y))
 
 #bullet
-bulletImg = pygame.image.load('img/bullet.png')
+bulletImg = pygame.image.load('assets/img/bullet.png')
 bulletX = playerX
 bulletY = playerY
 bulletState = 'ready' #ready = cant see bullet ---- fire = bullet is currently moving
@@ -137,7 +137,7 @@ while True:
                 bulletState = 'fire'
                 fire(playerX,bulletY)
                 bulletX = playerX + bulletWidth/2
-                bulletSound = mixer.Sound('sounds/shoot.wav')
+                bulletSound = mixer.Sound('assets/sounds/shoot.wav')
                 bulletSound.play()
             
     #enemy movement
@@ -175,7 +175,7 @@ while True:
             enemyY[i] = random.randint(enemyYInitMin,enemyYInitMax)
             enemyDirection[i] = bool(random.randint(0,1))
             #sound
-            bulletSound = mixer.Sound('sounds/explosion.wav')
+            bulletSound = mixer.Sound('assets/sounds/explosion.wav')
             bulletSound.play()
             if score%(levelLength*10) == 0 and score > 0:
                 enemySpeedX += enemySpeedXIncrement
