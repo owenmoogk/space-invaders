@@ -11,8 +11,8 @@ clock = pygame.time.Clock()
 
 #settings
 fpsLimit = 120 #controls the max framerate
-screenX = 800 #width of the screen
-screenY = 600 #height of the screen
+screenX = 900 #width of the screen
+screenY = 506 #height of the screen
 playerSize = 64 #pixels
 enemySize = 64 #pixels
 playerSpeed = 250/fpsLimit #player movement speed
