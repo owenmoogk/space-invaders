@@ -1,43 +1,8 @@
-import sys
-import pygame
-import random
-from pygame import mixer
+import sys, pygame, random
+from settings import *
 
-#intalize
-pygame.init()
-
-#clock
 clock = pygame.time.Clock()
-
-#settings
-fpsLimit = 120 #controls the max framerate
-screenX = 800 #width of the screen
-screenY = 600 #height of the screen
-playerSize = 64 #pixels
-enemySize = 64 #pixels
-playerSpeed = 250/fpsLimit #player movement speed
-enemyYInitMin = 50 #spawning distance from top of screen minimum
-enemyYInitMax = 150 #spawning distance from top of screen minimum
-enemySpeedX = 200/fpsLimit #initial speed of the enemy
-bulletSpeed = 750/fpsLimit #speed of the bullet
-bulletWidth = 16 #pixels
-bulletHeight = 32 #pixels
-enemySpeedXIncrement = .5 #every x points (5 shots) the speed of the enemy increases by this (affected by fps)
-enemyYDrop = 70 #every time the enemy reaches an edge this is they y drop
-numOfEnemies = 4 #number of enemies
-levelLength = 10 #number of enemies killed to move onto next level
-textX = 20 #x value for showing the score
-textY = 10 #y value for showing the score
-levelOffset = 40 # number of pixels shifted down the level display is
-font = pygame.font.Font('assets/text/Starjedi.ttf',30) #font and size
-gameOverFont = pygame.font.Font('assets/text/Starjedi.ttf',60)
-
-#create screen
 screen = pygame.display.set_mode((screenX,screenY))
-
-#background sound
-backgroundMusic = mixer.music.load('assets/sounds/background.mp3')
-mixer.music.play(-1)
 
 #title and icon
 pygame.display.set_caption("Space Invaders")
@@ -137,7 +102,7 @@ while True:
                 bulletState = 'fire'
                 fire(playerX,bulletY)
                 bulletX = playerX + bulletWidth/2
-                bulletSound = mixer.Sound('assets/sounds/shoot.wav')
+                bulletSound = pygame.mixer.Sound('assets/sounds/shoot.wav')
                 bulletSound.play()
             
     #enemy movement
@@ -175,7 +140,7 @@ while True:
             enemyY[i] = random.randint(enemyYInitMin,enemyYInitMax)
             enemyDirection[i] = bool(random.randint(0,1))
             #sound
-            bulletSound = mixer.Sound('assets/sounds/explosion.wav')
+            bulletSound = pygame.mixer.Sound('assets/sounds/explosion.wav')
             bulletSound.play()
             if score%(levelLength*10) == 0 and score > 0:
                 enemySpeedX += enemySpeedXIncrement
@@ -191,8 +156,5 @@ while True:
     
     showScore(textX,textY)
 
-    #clock
-    clock.tick(fpsLimit) #fps
-
-    #update the screen
+    clock.tick(fpsLimit)
     pygame.display.update()
